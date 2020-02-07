@@ -1,0 +1,39 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id "com.bmuschko.docker-spring-boot-application" version "6.1.3"
+}
+
+group = 'com.test'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'javax.jms:javax.jms-api:2.0'
+	implementation 'org.springframework:spring-jms'
+	implementation 'com.ibm.mq:com.ibm.mq.allclient:9.1.4.0'
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
+
+docker {
+	springBootApplication {
+		baseImage = 'openjdk:8-alpine'
+		ports = [8899]
+		images = ['poc-jms-ibm-mq:1.0.0']
+		jvmArgs = ['-Dspring.profiles.active=production', '-Xmx2048m']
+	}
+}

@@ -1,0 +1,8 @@
+# creating network #
+docker network create poc-ib-mq-network
+
+# creating ibm mq container #
+docker run --name ibm-mq -d -e LICENSE=accept -e MQ_QMGR_NAME=QM1 --network poc-ib-mq-network -p 1414:1414 -p 9443:9443 ibmcom/mq
+
+# creating app container #
+docker run --name poc-ibm-mq -d --network poc-ib-mq-network -p 8899:8899 poc-jms-ibm-mq:1.0.0
